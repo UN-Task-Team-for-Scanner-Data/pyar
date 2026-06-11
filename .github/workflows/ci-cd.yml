@@ -1,0 +1,73 @@
+name: Pyar CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip upgrade pip
+          pip install .[dev]
+
+      - name: Code Linting (Black)
+        run: black --check .
+
+      - name: Run Test Suite (Pytest)
+        run: pytest
+
+  deploy-docs:
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Docs Dependencies
+        run: |
+          python -m pip upgrade pip
+          pip install .[docs]
+
+      - name: Build Documentation Site
+        run: mkdocs build
+
+      - name: Upload Static Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/ # MkDocs outputs the compiled HTML to the /site folder by default
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

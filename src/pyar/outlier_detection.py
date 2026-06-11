@@ -3,10 +3,10 @@ import numpy.typing as npt
 
 
 def quartile_method(
-        x: npt.ArrayLike,
-        cu: float = 2.5,
-        ci: float = 2.5,
-        a: int = 0,
+    x: npt.ArrayLike,
+    cu: float = 2.5,
+    ci: float = 2.5,
+    a: int = 0,
 ) -> npt.ArrayLike:
     """Calculates a threshold using the quartile method.
 
@@ -26,7 +26,7 @@ def quartile_method(
     Returns
     -------
     ndarray
-        A filtered data array 
+        A filtered data array
 
     """
     raise NotImplementedError

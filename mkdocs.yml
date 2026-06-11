@@ -2,6 +2,7 @@ site_name: Pyar Documentation
 
 theme:
   name: material
+  logo: assets/pyar-logo-small.svg
 
 plugins:
   - search

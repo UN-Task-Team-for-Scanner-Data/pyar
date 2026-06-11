@@ -1,3 +1,7 @@
+---
+status: wip
+---
+
 # Welcome to Pyar
 
 The goal of this project is to provide a collection of tools for Price Index calculation and aggregation.
